@@ -6,6 +6,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
@@ -16,8 +17,8 @@ public class Main {
             while (true) {
                 int terms = ThreadLocalRandom.current().nextInt(1, 48);
                 HttpRequest request = request(terms);
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                showResponse(response);
+                CompletableFuture<HttpResponse<String>> future = client.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                future.thenAccept(Main::showResponse);
                 Thread.sleep(100);
             }
         }
